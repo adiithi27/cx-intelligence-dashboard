@@ -51,12 +51,20 @@ line-height:1.6;
 # ---------------------------------------------------
 # SIDEBAR COLLAPSIBLE NAVIGATION
 # ---------------------------------------------------
+# ---------------------------------------------------
+# SIDEBAR COLLAPSIBLE NAVIGATION
+# ---------------------------------------------------
 
 st.sidebar.title("CX Intelligence Platform")
 
 page = None
 
-with st.sidebar.expander("EDA", expanded=True):
+with st.sidebar.expander("Dashboard Overview", expanded=True):
+
+    if st.button("Overview"):
+        page = "overview"
+
+with st.sidebar.expander("EDA"):
 
     if st.button("EDA Overview"):
         page = "eda"
@@ -79,8 +87,64 @@ with st.sidebar.expander("Model Insights"):
 
 # default page
 if page is None:
-    page = "eda"
+    page = "overview"
 
+# ---------------------------------------------------
+# DASHBOARD OVERVIEW
+# ---------------------------------------------------
+
+if page == "overview":
+
+    st.title("Customer Experience Intelligence Dashboard")
+
+    st.subheader("Dashboard Overview")
+
+    st.write("""
+This dashboard presents **descriptive analytics and exploratory data analysis (EDA)** 
+for understanding customer experience performance.
+
+The goal of this dashboard is to analyze customer behaviour and identify 
+patterns that influence customer satisfaction and retention.
+
+Key objectives include:
+
+• Evaluating customer engagement patterns  
+• Identifying relationships between CX variables  
+• Understanding customer behavioural segments  
+• Identifying drivers of CX performance using machine learning
+""")
+
+    st.subheader("Dataset Description")
+
+    st.write("""
+The dataset used in this analysis contains **400 simulated customer observations**.
+Each observation represents a customer and includes several variables that capture 
+engagement behaviour, support interactions, retention probability, and overall 
+customer experience performance.
+""")
+
+    st.subheader("Key Variables")
+
+    st.markdown("""
+- **CXI Score** – Overall customer experience performance indicator  
+- **User Engagement Score** – Level of interaction customers have with the platform  
+- **Customer Retention** – Probability of customers continuing to use the service  
+- **Support Tickets per Month** – Frequency of support requests made by customers  
+- **CX Adoption Success** – Degree to which customers adopt CX initiatives  
+- **Training Completion Rate** – Percentage of customers completing training modules
+""")
+
+    st.subheader("Dataset Summary")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric("Number of Customers", df.shape[0])
+
+    with col2:
+        st.metric("Number of Variables", df.shape[1])
+
+    st.dataframe(df.head())
 # ---------------------------------------------------
 # EDA OVERVIEW
 # ---------------------------------------------------
