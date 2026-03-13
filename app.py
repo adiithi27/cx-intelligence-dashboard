@@ -5,14 +5,11 @@ import plotly.graph_objects as go
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.cluster import KMeans
 
-st.set_page_config(
-    page_title="CX Intelligence Platform",
-    layout="wide"
-)
+st.set_page_config(page_title="CX Intelligence Platform", layout="wide")
 
-# -------------------------------
-# CUSTOM CSS (KPI CARDS)
-# -------------------------------
+# --------------------------------------------------
+# CUSTOM CSS
+# --------------------------------------------------
 
 st.markdown("""
 <style>
@@ -42,25 +39,48 @@ font-size:12px;
 color:#64748b;
 }
 
+.insight-box {
+background-color:#0b1a33;
+padding:20px;
+border-radius:12px;
+border:1px solid #2563eb;
+margin-top:10px;
+margin-bottom:30px;
+}
+
+.insight-title {
+color:#60a5fa;
+font-size:12px;
+letter-spacing:1px;
+font-weight:600;
+margin-bottom:10px;
+}
+
+.insight-text {
+color:#e5e7eb;
+font-size:14px;
+line-height:1.6;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-# -------------------------------
+# --------------------------------------------------
 # LOAD DATA
-# -------------------------------
+# --------------------------------------------------
 
 df = pd.read_csv("cx_simulated_dataset_400.csv")
 
-# -------------------------------
+# --------------------------------------------------
 # TITLE
-# -------------------------------
+# --------------------------------------------------
 
 st.title("CX Intelligence Platform")
 st.caption("Customer Experience Analytics • Behaviour Intelligence • CX Performance")
 
-# -------------------------------
+# --------------------------------------------------
 # SIDEBAR FILTERS
-# -------------------------------
+# --------------------------------------------------
 
 st.sidebar.header("Filters")
 
@@ -83,9 +103,9 @@ filtered_df = df[
     (df["support_tickets_per_month"] <= ticket_filter)
 ]
 
-# -------------------------------
+# --------------------------------------------------
 # KPI CARDS
-# -------------------------------
+# --------------------------------------------------
 
 st.subheader("Executive Overview")
 
@@ -129,9 +149,9 @@ with col4:
 
 st.divider()
 
-# -------------------------------
+# --------------------------------------------------
 # CX HEALTH GAUGE
-# -------------------------------
+# --------------------------------------------------
 
 health_score = filtered_df["cxi_score"].mean() * 10
 
@@ -154,13 +174,14 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.divider()
 
-# -------------------------------
-# MULTI GRAPH ANALYTICS
-# -------------------------------
+# --------------------------------------------------
+# GRAPH ANALYTICS + INSIGHTS
+# --------------------------------------------------
 
 col1, col2 = st.columns(2)
 
 with col1:
+
     fig = px.scatter(
         filtered_df,
         x="user_engagement_score",
@@ -168,9 +189,22 @@ with col1:
         color="customer_retention",
         title="Engagement vs Retention"
     )
+
     st.plotly_chart(fig, use_container_width=True)
 
+    st.markdown("""
+    <div class="insight-box">
+    <div class="insight-title">WHAT THIS MEANS FOR THE BUSINESS</div>
+    <div class="insight-text">
+    Higher engagement users demonstrate significantly stronger retention levels.  
+    Improving product engagement features will likely produce the largest CX improvement.
+    </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 with col2:
+
     fig = px.scatter(
         filtered_df,
         x="support_tickets_per_month",
@@ -178,31 +212,24 @@ with col2:
         color="cxi_score",
         title="Support Tickets vs CXI Score"
     )
+
     st.plotly_chart(fig, use_container_width=True)
 
-col3, col4 = st.columns(2)
-
-with col3:
-    fig = px.histogram(
-        filtered_df,
-        x="cxi_score",
-        title="CXI Score Distribution"
-    )
-    st.plotly_chart(fig, use_container_width=True)
-
-with col4:
-    fig = px.histogram(
-        filtered_df,
-        x="customer_retention",
-        title="Retention Distribution"
-    )
-    st.plotly_chart(fig, use_container_width=True)
+    st.markdown("""
+    <div class="insight-box">
+    <div class="insight-title">WHAT THIS MEANS FOR THE BUSINESS</div>
+    <div class="insight-text">
+    Customers generating more support tickets tend to show lower CX scores.  
+    Improving onboarding and self-service tools could significantly improve CX performance.
+    </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 st.divider()
 
-# -------------------------------
+# --------------------------------------------------
 # CUSTOMER SEGMENTATION
-# -------------------------------
+# --------------------------------------------------
 
 st.subheader("Customer Segmentation")
 
@@ -226,9 +253,9 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.divider()
 
-# -------------------------------
+# --------------------------------------------------
 # DRIVER ANALYSIS
-# -------------------------------
+# --------------------------------------------------
 
 st.subheader("Key Drivers of CXI Score")
 
@@ -255,9 +282,9 @@ st.plotly_chart(fig, use_container_width=True)
 
 st.divider()
 
-# -------------------------------
+# --------------------------------------------------
 # AUTOMATED CX INSIGHTS
-# -------------------------------
+# --------------------------------------------------
 
 st.subheader("Automated CX Insights")
 
@@ -271,14 +298,7 @@ if filtered_df["user_engagement_score"].corr(filtered_df["customer_retention"]) 
 if filtered_df["support_tickets_per_month"].corr(filtered_df["cxi_score"]) < 0:
     st.write("More support tickets are associated with lower CX scores.")
 
-if filtered_df["training_completion_rate"].corr(filtered_df["cx_adoption_success"]) > 0.4:
-    st.write("Training completion improves CX adoption success.")
-
 st.divider()
-
-# -------------------------------
-# DATASET VIEW
-# -------------------------------
 
 with st.expander("View Dataset"):
     st.dataframe(filtered_df)
